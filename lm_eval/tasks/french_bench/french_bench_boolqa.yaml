@@ -7,6 +7,9 @@ task: french_bench_boolqa
 dataset_path: manu/french_boolq
 output_type: multiple_choice
 validation_split: valid
+fewshot_config:
+  sampler: loo
+  split: valid
 doc_to_text: "\nContexte: {{passage}}\n\nQuestion: {{question}}\n"
 doc_to_choice: ["Oui", "Non"]
 # doc_to_text: "\nContexte: {{passage}}\n\nQuestion: {{question}}\n\nD'après l'information dans le contexte, la réponse est:\nA. Oui \nB. Non\n\nRéponse:"

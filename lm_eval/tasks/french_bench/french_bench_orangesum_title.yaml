@@ -9,6 +9,9 @@ dataset_name: title
 output_type: generate_until
 validation_split: validation
 fewshot_split: validation
+fewshot_config:
+  sampler: loo
+  split: validation
 doc_to_text: "\nArticle: {{text}}\n\nTitre:"
 doc_to_target: "{{summary}}"
 target_delimiter: " "
