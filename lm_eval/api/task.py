@@ -977,7 +977,7 @@ class ConfigurableTask(Task):
             for fs_doc in self.sampler.sample(
                 n=num_fewshot,
                 eval_doc=doc
-                if self.fewshot_cfg.split == self.config.test_split
+                if self.fewshot_cfg.split in (self.config.test_split, self.config.validation_split)
                 else None,
             ):
                 q, c, a = (

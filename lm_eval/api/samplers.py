@@ -121,9 +121,86 @@ class ManualSampler(ContextSampler):
         raise NotImplementedError
 
 
+MAX_K = 10
+
+
+class LeaveOneOutSampler(ContextSampler):
+    """Sampler for tasks where few-shot examples come from the same split
+    being evaluated (no separate training split). Pre-selects a fixed set of
+    k primary demonstrations plus k reserves, then swaps out the current
+    eval instance when it collides with a primary demo.
+
+    Caps k at MAX_K=10 to limit distributional leakage on small splits.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._primary: list[dict] | None = None
+        self._reserves: list[dict] | None = None
+
+    def set_rnd(self, rnd: int | None):
+        super().set_rnd(rnd)
+        self._primary = None
+        self._reserves = None
+        return self
+
+    def _init_pools(self, n: int) -> None:
+        pool = self.fewshot_docs()
+        n = min(n, MAX_K, len(pool))
+        take = min(2 * n, len(pool))
+        selected = self.rnd.sample(pool, take)
+        self._primary = selected[:n]
+        self._reserves = selected[n:]
+
+    def sample(
+        self,
+        n: int,
+        eval_doc: dict | None = None,
+        df=None,
+        **kwargs,
+    ) -> list[dict]:
+        assert n >= 0, "Error: number of samples requested must be >=0"
+        if n == 0:
+            return []
+
+        if df:
+            self.df = df
+
+        if n > MAX_K:
+            eval_logger.warning(
+                "LeaveOneOutSampler: requested n=%d clamped to MAX_K=%d", n, MAX_K
+            )
+            n = min(n, MAX_K)
+
+        if self._primary is None:
+            self._init_pools(n)
+
+        if eval_doc is None or eval_doc not in self._primary:
+            return list(self._primary[:n])
+
+        # eval_doc is one of the primaries — swap it with a reserve
+        result = [d for d in self._primary if d != eval_doc][:n]
+        if len(result) < n:
+            for reserve in self._reserves:
+                if reserve != eval_doc and reserve not in result:
+                    result.append(reserve)
+                    if len(result) == n:
+                        break
+        if len(result) < n:
+            # Fallback: scan full pool (near-impossible with 800+ rows)
+            for doc in self.fewshot_docs():
+                if doc != eval_doc and doc not in result:
+                    result.append(doc)
+                    if len(result) == n:
+                        break
+
+        return result
+
+
 SAMPLER_REGISTRY: dict[str, type[ContextSampler]] = {
     "default": ContextSampler,
     "first_n": FirstNSampler,
+    "loo": LeaveOneOutSampler,
 }
 
 
