@@ -1,0 +1,4 @@
+task: norbelebele_hybrid_p0
+include: _norbelebele_yaml
+doc_to_text: "Tekst: {{flores_passage}}\nSpørsmål: {{question}}\n- {{mc_answer1}}\n- {{mc_answer2}}\n- {{mc_answer3}}\n- {{mc_answer4}}\nSvar:"
+doc_to_choice: "{{[mc_answer1, mc_answer2, mc_answer3, mc_answer4]}}"

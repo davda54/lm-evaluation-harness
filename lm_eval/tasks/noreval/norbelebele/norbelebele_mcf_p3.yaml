@@ -1,0 +1,5 @@
+task: norbelebele_mcf_p3
+include: _norbelebele_yaml
+doc_to_text: "Svar på følgende spørsmål: {{question}}\nSvaret skal baseres på følgende tekst:\n{{flores_passage}}\nVelg et svar fra denne listen:\nA: {{mc_answer1}}\nB: {{mc_answer2}}\nC: {{mc_answer3}}\nD: {{mc_answer4}}"
+doc_to_choice: ["A", "B", "C", "D"]
+target_delimiter: "\n"
