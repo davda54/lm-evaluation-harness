@@ -189,6 +189,16 @@ def acc_bytes_fn(items):  # This is a passthrough function
     return items
 
 
+@register_metric(
+    metric="norm_loglikelihood_corr",
+    higher_is_better=True,
+    output_type=["loglikelihood", "multiple_choice"],
+    aggregation="mean",
+)
+def norm_loglikelihood_corr_fn(items):  # passthrough; computed in task.process_results
+    return items
+
+
 ### the code used in the `exact_match_hf_evaluate` function is ported from
 ### https://github.com/huggingface/evaluate/blob/main/metrics/exact_match/exact_match.py
 ### which is under the apache license.

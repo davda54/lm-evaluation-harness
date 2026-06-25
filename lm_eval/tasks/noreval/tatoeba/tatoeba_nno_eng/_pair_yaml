@@ -1,0 +1,8 @@
+include: ../_tatoeba_yaml
+dataset_path: csv
+dataset_kwargs:
+  delimiter: "\t"
+  column_names: [sourceLang, targetLang, sourceString, targetString]
+  data_files:
+    validation: /cluster/projects/nn10029k/multisynt/data/tatoeba_mt/eng-nno/dev.tsv
+    test: /cluster/projects/nn10029k/multisynt/data/tatoeba_mt/eng-nno/test.tsv

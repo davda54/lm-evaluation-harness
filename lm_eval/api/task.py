@@ -745,6 +745,25 @@ class ConfigurableTask(Task):
                     )
                     self._higher_is_better[metric_name] = is_higher_better(metric_name)
 
+        # Always emit norm_loglikelihood_corr for multiple-choice tasks, even when
+        # a task YAML pins its own metric_list. This is a continuous, char-length
+        # normalized log-likelihood of the gold continuation — useful for early
+        # pre-training checkpoints where the 0/1 acc/acc_norm signal is too coarse.
+        if (
+            self.config.output_type == "multiple_choice"
+            and "norm_loglikelihood_corr" not in self._metric_fn_list
+        ):
+            self._metric_fn_list["norm_loglikelihood_corr"] = get_metric(
+                "norm_loglikelihood_corr"
+            )
+            self._metric_fn_kwargs["norm_loglikelihood_corr"] = {}
+            self._aggregation_list["norm_loglikelihood_corr"] = (
+                get_metric_aggregation("norm_loglikelihood_corr")
+            )
+            self._higher_is_better["norm_loglikelihood_corr"] = is_higher_better(
+                "norm_loglikelihood_corr"
+            )
+
         self.download(self.config.dataset_kwargs)
         self._training_docs = None
         self._fewshot_docs = None
@@ -1545,6 +1564,27 @@ class ConfigurableTask(Task):
 
             prob_norm = utils.softmax(lls)
 
+            if "norm_loglikelihood_corr" in use_metric:
+                # Char-normalized log-likelihood of the gold continuation.
+                # Continuous per-doc metric: log P(gold | ctx) / char_len(gold).
+                # Char count uses len(str) (Unicode code points) for consistency
+                # with acc_norm; multi-codepoint graphemes are slightly miscounted.
+                lls_arr = np.asarray(lls)
+                if self.multiple_target:
+                    gold_idxs = [g for g in gold if g != -100]
+                    if gold_idxs:
+                        norm_ll_corr = float(
+                            max(lls_arr[g] / completion_len[g] for g in gold_idxs)
+                        )
+                    else:
+                        norm_ll_corr = float("nan")
+                else:
+                    norm_ll_corr = (
+                        float(lls_arr[gold] / completion_len[gold])
+                        if gold != -100
+                        else float("nan")
+                    )
+
             # TODO use keyword arguments to the metric?
             # gold, pred, norm stuff, the original lls,
             result_dict = {
@@ -1560,6 +1600,11 @@ class ConfigurableTask(Task):
                     else {}
                 ),
                 **({"likelihood": (gold, lls)} if "likelihood" in use_metric else {}),
+                **(
+                    {"norm_loglikelihood_corr": norm_ll_corr}
+                    if "norm_loglikelihood_corr" in use_metric
+                    else {}
+                ),
             }
 
             if "acc_mutual_info" in use_metric:
@@ -1699,22 +1744,26 @@ class MultipleChoiceTask(Task):
         acc = 1.0 if np.argmax(results) == gold else 0.0
         completion_len = np.array([float(len(i)) for i in doc["choices"]])
         acc_norm = 1.0 if np.argmax(results / completion_len) == gold else 0.0
+        norm_ll_corr = float(results[gold] / completion_len[gold])
 
         return {
             "acc": acc,
             "acc_norm": acc_norm,
+            "norm_loglikelihood_corr": norm_ll_corr,
         }
 
     def higher_is_better(self) -> dict:
         return {
             "acc": True,
             "acc_norm": True,
+            "norm_loglikelihood_corr": True,
         }
 
     def aggregation(self) -> dict:
         return {
             "acc": mean,
             "acc_norm": mean,
+            "norm_loglikelihood_corr": mean,
         }
 
 
