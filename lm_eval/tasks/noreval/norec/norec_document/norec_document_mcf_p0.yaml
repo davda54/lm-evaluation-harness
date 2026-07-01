@@ -1,0 +1,8 @@
+tag:
+  - norec_document
+  - norec_document_mcf
+dataset_path: ltg/norec_document
+task: norec_document_mcf_p0
+include: ../_norec_yaml
+doc_to_text: "Tekst: {{review}}\nEr sentimentet A. negativ eller B. positiv?\nSvar:"
+doc_to_choice: ["A", "B"]

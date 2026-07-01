@@ -1,0 +1,8 @@
+tag:
+  - norec_document
+  - norec_document_mcf
+dataset_path: ltg/norec_document
+task: norec_document_mcf_p2
+include: ../_norec_yaml
+doc_to_text: "Er polariteten til følgende anmeldelse A. negativ eller B. positiv?\nAnmeldelse: {{review}}\nSvar:"
+doc_to_choice: ["A", "B"]

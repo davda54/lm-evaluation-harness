@@ -1,0 +1,8 @@
+tag:
+  - norec_document
+  - norec_document_hybrid
+dataset_path: ltg/norec_document
+task: norec_document_hybrid_p2
+include: ../_norec_yaml
+doc_to_text: "Er polariteten til følgende anmeldelse positiv eller negativ?\nAnmeldelse: {{review}}\nAnmeldelsen er"
+doc_to_choice: ["negativ", "positiv"]

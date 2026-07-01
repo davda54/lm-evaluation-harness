@@ -1,0 +1,7 @@
+tag:
+  - norbelebele
+  - norbelebele_hybrid
+task: norbelebele_hybrid_p4
+include: _norbelebele_yaml
+doc_to_text: "{{flores_passage}}\n\n{{question}}\n\n- {{mc_answer1}}\n- {{mc_answer2}}\n- {{mc_answer3}}\n- {{mc_answer4}}\n\nEr det riktige svaret {{mc_answer1}}, {{mc_answer2}}, {{mc_answer3}}, eller {{mc_answer4}}?"
+doc_to_choice: "{{[mc_answer1, mc_answer2, mc_answer3, mc_answer4]}}"

@@ -1,0 +1,8 @@
+tag:
+  - norec_document
+  - norec_document_hybrid
+dataset_path: ltg/norec_document
+task: norec_document_hybrid_p0
+include: ../_norec_yaml
+doc_to_text: "Tekst: {{review}}\nEr sentimentet \"negativ\" eller \"positiv\"?\nSentiment:"
+doc_to_choice: ["negativ", "positiv"]
