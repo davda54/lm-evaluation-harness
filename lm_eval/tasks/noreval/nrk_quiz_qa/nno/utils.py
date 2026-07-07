@@ -19,7 +19,7 @@ def _unlabeled_choices(doc):
 def _labeled_choices(doc):
     """Options as a labeled list, e.g. 'A. Oslo' (used by mcf formations)."""
     return "".join(
-        f"\n{label}. {option}"
+        f"\n {label}. {option}"
         for label, option in zip(doc["choices"]["label"], doc["choices"]["text"])
     )
 

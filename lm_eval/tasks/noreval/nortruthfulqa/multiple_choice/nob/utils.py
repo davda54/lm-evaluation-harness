@@ -29,7 +29,7 @@ def _unlabeled_choices(doc):
 def _labeled_choices(doc):
     """Options as a labeled list, e.g. 'A. ...' (used by mcf formations)."""
     return "".join(
-        f"\n{label}. {choice}"
+        f"\n {label}. {choice}"
         for label, choice in zip(_labels(doc), doc["mc1_targets"]["choices"])
     )
 

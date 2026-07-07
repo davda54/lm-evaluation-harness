@@ -4,5 +4,5 @@ tag:
 dataset_name: nb
 task: norcommonsenseqa_nob_mcf_p3
 include: ../_norcommonsenseqa_yaml
-doc_to_text: "{{question}}\nVelg riktig svar blant disse alternativene:\nA: {{choices.text[0]}}\nB: {{choices.text[1]}}\nC: {{choices.text[2]}}\nD: {{choices.text[3]}}\nE: {{choices.text[4]}}\n\nSvar:"
+doc_to_text: "{{question}}\nVelg riktig svar blant disse alternativene:\n A: {{choices.text[0]}}\n B: {{choices.text[1]}}\n C: {{choices.text[2]}}\n D: {{choices.text[3]}}\n E: {{choices.text[4]}}\n\nSvar:"
 doc_to_choice: "{{choices.label}}"

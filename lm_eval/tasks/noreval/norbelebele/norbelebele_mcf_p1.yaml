@@ -3,5 +3,5 @@ tag:
   - norbelebele_mcf
 task: norbelebele_mcf_p1
 include: _norbelebele_yaml
-doc_to_text: "Bakgrunn: {{flores_passage}}\nSpørsmål:{{question}}\nSvaralternativer:\nA: {{mc_answer1}}\nB: {{mc_answer2}}\nC: {{mc_answer3}}\nD: {{mc_answer4}}\nRiktig svar:"
+doc_to_text: "Bakgrunn: {{flores_passage}}\nSpørsmål:{{question}}\nSvaralternativer:\n A: {{mc_answer1}}\n B: {{mc_answer2}}\n C: {{mc_answer3}}\n D: {{mc_answer4}}\nRiktig svar:"
 doc_to_choice: ["A", "B", "C", "D"]
