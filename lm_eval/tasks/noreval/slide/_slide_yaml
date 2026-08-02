@@ -6,7 +6,7 @@ validation_split: validation
 fewshot_split: validation
 output_type: multiple_choice
 doc_to_target: "{{correct_indices[0]}}"
-process_results: !function utils.process_multilabel
+process_results: !function utils.process_multilabel_word
 metric_list:
   - metric: acc
     aggregation: mean
