@@ -4,6 +4,7 @@ from evaluate import load
 
 
 try:
+    # import bert_score
     import bert_score
     import sacrebleu
     from rouge_score import rouge_scorer, scoring
@@ -15,6 +16,22 @@ except ModuleNotFoundError as e:
 
 ROUGE_SCORER = None
 BERTSCORE = None
+
+
+def clean_summary_text(text):
+    """Remove newlines from summaries."""
+    text = text.replace("\n\n", " ")
+    text = text.replace("\n", "")
+    return text
+
+
+def clean_summaries(dataset):
+    """Clean newlines from all summaries in the dataset."""
+    def clean_doc(doc):
+        doc["summaries"] = [clean_summary_text(s) for s in doc["summaries"]]
+        return doc
+    
+    return dataset.map(clean_doc)
 
 
 def process_results(doc, results):
